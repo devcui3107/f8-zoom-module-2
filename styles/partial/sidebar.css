@@ -1,0 +1,19 @@
+/* Sidebar */
+.sidebar {
+  width: 360px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  overflow: hidden;
+  z-index: var(--z-sidebar);
+}
+
+.sidebar-header {
+  padding-left: 20px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
