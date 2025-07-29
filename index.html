@@ -102,7 +102,7 @@
       <main class="main-content">
         <!-- Sidebar -->
         <aside class="sidebar">
-          <nav class="sidebar-nav">
+          <nav class="sidebar-nav" id="sidebarLibrary">
             <div class="nav-section">
               <h2 class="section-title">Your Library</h2>
               <button class="create-btn">
@@ -112,8 +112,14 @@
             </div>
 
             <div class="nav-tabs">
-              <button class="nav-tab active">Playlists</button>
-              <button class="nav-tab">Artists</button>
+              <div class="tabza__triggers">
+                <button data-tab="1" class="nav-tab tabza__trigger active">
+                  Playlists
+                </button>
+                <button data-tab="2" class="nav-tab tabza__trigger">
+                  Artists
+                </button>
+              </div>
             </div>
 
             <div class="search-library">
@@ -126,157 +132,85 @@
               </button>
             </div>
 
-            <div class="library-content">
-              <div class="library-item active">
-                <div class="item-icon liked-songs">
-                  <i class="fas fa-heart"></i>
-                </div>
-                <div class="item-info">
-                  <div class="item-title">Liked Songs</div>
-                  <div class="item-subtitle">
-                    <i class="fas fa-thumbtack"></i>
-                    Playlist • 3 songs
+            <div class="tabza__panels">
+              <!-- Playlists -->
+              <div data-panel="1" class="tabza__panel active">
+                <div class="library-content">
+                  <div class="library-item active">
+                    <div class="item-icon liked-songs">
+                      <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="item-info">
+                      <div class="item-title">Liked Songs</div>
+                      <div class="item-subtitle">
+                        <i class="fas fa-thumbtack"></i>
+                        Playlist • 3 songs
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="library-item">
+                    <img
+                      src="placeholder.svg?height=48&width=48"
+                      alt="Đen"
+                      class="item-image"
+                    />
+                    <div class="item-info">
+                      <div class="item-title">Đen</div>
+                      <div class="item-subtitle">Artist</div>
+                    </div>
+                  </div>
+
+                  <div class="library-item">
+                    <img
+                      src="placeholder.svg?height=48&width=48"
+                      alt="Trúc Nhân"
+                      class="item-image"
+                    />
+                    <div class="item-info">
+                      <div class="item-title">Trúc Nhân</div>
+                      <div class="item-subtitle">Artist</div>
+                    </div>
+                  </div>
+
+                  <div class="library-item">
+                    <img
+                      src="placeholder.svg?height=48&width=48"
+                      alt="24.03"
+                      class="item-image"
+                    />
+                    <div class="item-info">
+                      <div class="item-title">24.03</div>
+                      <div class="item-subtitle">Playlist • Han</div>
+                    </div>
+                  </div>
+
+                  <div class="library-item">
+                    <img
+                      src="placeholder.svg?height=48&width=48"
+                      alt="Thùy Chi"
+                      class="item-image"
+                    />
+                    <div class="item-info">
+                      <div class="item-title">Thùy Chi</div>
+                      <div class="item-subtitle">Artist</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="library-item">
-                <img
-                  src="placeholder.svg?height=48&width=48"
-                  alt="Đen"
-                  class="item-image"
-                />
-                <div class="item-info">
-                  <div class="item-title">Đen</div>
-                  <div class="item-subtitle">Artist</div>
-                </div>
-              </div>
-
-              <div class="library-item">
-                <img
-                  src="placeholder.svg?height=48&width=48"
-                  alt="Trúc Nhân"
-                  class="item-image"
-                />
-                <div class="item-info">
-                  <div class="item-title">Trúc Nhân</div>
-                  <div class="item-subtitle">Artist</div>
-                </div>
-              </div>
-
-              <div class="library-item">
-                <img
-                  src="placeholder.svg?height=48&width=48"
-                  alt="24.03"
-                  class="item-image"
-                />
-                <div class="item-info">
-                  <div class="item-title">24.03</div>
-                  <div class="item-subtitle">Playlist • Han</div>
-                </div>
-              </div>
-
-              <div class="library-item">
-                <img
-                  src="placeholder.svg?height=48&width=48"
-                  alt="Thùy Chi"
-                  class="item-image"
-                />
-                <div class="item-info">
-                  <div class="item-title">Thùy Chi</div>
-                  <div class="item-subtitle">Artist</div>
+              <!-- Artists -->
+              <div data-panel="2" class="tabza__panel">
+                <div class="library-content" id="artists">
+                  <!-- Đợi JS Render ra -->
                 </div>
               </div>
             </div>
           </nav>
         </aside>
 
-        <div class="content-wrapper">
-          <!-- Artist Hero Section -->
-          <section class="artist-hero">
-            <div class="hero-background">
-              <img
-                src="placeholder.svg"
-                alt="Đen artist background"
-                class="hero-image"
-              />
-              <div class="hero-overlay"></div>
-            </div>
-            <div class="hero-content">
-              <div class="verified-badge">
-                <i class="fas fa-check-circle"></i>
-                <span>Verified Artist</span>
-              </div>
-              <h1 class="artist-name">Đen</h1>
-              <p class="monthly-listeners">1,021,833 monthly listeners</p>
-            </div>
-          </section>
-
-          <!-- Artist Controls -->
-          <section class="artist-controls">
-            <button class="play-btn-large">
-              <i class="fas fa-play"></i>
-            </button>
-          </section>
-
-          <!-- Popular Tracks -->
-          <section class="popular-section">
-            <h2 class="section-title">Popular</h2>
-            <div class="track-list">
-              <div class="track-item">
-                <div class="track-number">1</div>
-                <div class="track-image">
-                  <img
-                    src="placeholder.svg?height=40&width=40"
-                    alt="Cho Tôi Lang Thang"
-                  />
-                </div>
-                <div class="track-info">
-                  <div class="track-name">Cho Tôi Lang Thang</div>
-                </div>
-                <div class="track-plays">27,498,341</div>
-                <div class="track-duration">4:18</div>
-                <button class="track-menu-btn">
-                  <i class="fas fa-ellipsis-h"></i>
-                </button>
-              </div>
-
-              <div class="track-item playing">
-                <div class="track-number">
-                  <i class="fas fa-volume-up playing-icon"></i>
-                </div>
-                <div class="track-image">
-                  <img src="placeholder.svg?height=40&width=40" alt="Lối Nhỏ" />
-                </div>
-                <div class="track-info">
-                  <div class="track-name playing-text">Lối Nhỏ</div>
-                </div>
-                <div class="track-plays">45,686,866</div>
-                <div class="track-duration">4:12</div>
-                <button class="track-menu-btn">
-                  <i class="fas fa-ellipsis-h"></i>
-                </button>
-              </div>
-
-              <div class="track-item">
-                <div class="track-number">3</div>
-                <div class="track-image">
-                  <img
-                    src="placeholder.svg?height=40&width=40"
-                    alt="Cho Minh Em"
-                  />
-                </div>
-                <div class="track-info">
-                  <div class="track-name">Cho Minh Em</div>
-                </div>
-                <div class="track-plays">20,039,024</div>
-                <div class="track-duration">3:26</div>
-                <button class="track-menu-btn">
-                  <i class="fas fa-ellipsis-h"></i>
-                </button>
-              </div>
-            </div>
-          </section>
+        <div class="content-wrapper" id="contentWrapper">
+          <!-- Đợi JS Render -->
         </div>
       </main>
 
@@ -440,6 +374,6 @@
       </div>
     </div>
 
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

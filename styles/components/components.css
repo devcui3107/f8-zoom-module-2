@@ -172,6 +172,10 @@
   background-color: var(--bg-hover);
 }
 
+.library-item > * {
+  pointer-events: none;
+}
+
 .item-image {
   width: 48px;
   height: 48px;

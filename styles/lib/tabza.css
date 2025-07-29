@@ -1,0 +1,7 @@
+.tabza__panel {
+  display: none;
+}
+
+.tabza__panel.active {
+  display: block;
+}

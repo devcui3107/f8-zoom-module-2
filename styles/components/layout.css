@@ -80,7 +80,7 @@
   padding: 0 var(--spacing-lg) var(--spacing-lg);
   border-radius: var(--radius-md);
   background-color: var(--bg-secondary);
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* Player */
@@ -101,7 +101,7 @@
   gap: var(--spacing-md);
   min-width: 0;
   flex: 1;
-  max-width: 300px;
+  max-width: 339px;
 }
 
 .player-image {
@@ -140,7 +140,7 @@
   align-items: center;
   gap: var(--spacing-sm);
   flex: 2;
-  max-width: 722px;
+  max-width: 600px;
 }
 
 .player-controls {
