@@ -1,6 +1,6 @@
 import AuthService from "./services/AuthService.js";
 import AuthModal from "./components/AuthModal.js";
-import Toast from "./components/toast.js";
+import Toast from "./components/Toast.js";
 import RenderApi from "./api/renderApi.js";
 
 class App {
