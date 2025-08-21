@@ -1,0 +1,231 @@
+.content-wrapper {
+  padding: 0 20px 20px 20px;
+  overflow-x: hidden;
+}
+
+.content__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 0 -16px;
+}
+
+/* Responsive grid cho các màn hình khác nhau */
+@media (max-width: 1200px) {
+  .content__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content__grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content__grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+}
+
+.content__row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.content__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.content__btn {
+  font-weight: 600;
+  font-size: 14px;
+  color: #b3b3b3;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.content__btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* Card */
+.content__card {
+  padding: 12px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.content__card:hover {
+  border-radius: 12px;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  background: #1f1f1f;
+}
+
+.content__card:hover .content__thumbnail {
+  transform: scale(1.02);
+}
+
+/* Image Container */
+.content__thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.content__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Info */
+.content__info {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.content__info-title {
+  text-transform: capitalize;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.content__card:hover .content__info-title {
+  color: #1db954;
+}
+
+.content__info-artist {
+  text-transform: capitalize;
+  font-size: 12px;
+  color: #b3b3b3;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.content__card:hover .content__info-artist {
+  color: #ffffff;
+}
+
+/* Loading State */
+.content__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-top: 3px solid #1db954;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.content__loading p {
+  color: #b3b3b3;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Home Content */
+.content__home {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.content__home:not(:first-of-type) {
+  margin-top: 50px;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Play Button Large Styles */
+.play-btn-large {
+  background: #1db954;
+  color: #000;
+  border: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
+.play-btn-large:hover {
+  background: #1ed760;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(29, 185, 84, 0.4);
+}
+
+.play-btn-large:active {
+  transform: scale(0.98);
+}
+
+.play-btn-large i {
+  margin-left: 2px; /* Căn chỉnh icon play */
+}

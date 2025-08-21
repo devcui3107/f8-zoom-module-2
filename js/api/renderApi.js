@@ -1,160 +1,377 @@
 import httpRequest from "./httpRequest.js";
-import { formatNumberUser } from "../utils/helpers.js";
+import TemplateService from "../services/TemplateService.js";
+import PlayerService from "../services/PlayerService.js";
+import Lopza from "../lib/lopza.js";
 
 class RenderApi {
   constructor() {
-    this.artistsData = [];
+    this.templateService = new TemplateService();
+    this.playerService = new PlayerService();
+    this.sliders = new Map();
+    this.currentAlbumData = null; // Lưu thông tin album hiện tại
+
+    // Set template service cho player
+    this.playerService.setTemplateService(this.templateService);
+
+    // Render footer mặc định sau khi template service sẵn sàng
+    this.initDefaultFooter();
   }
 
-  async _buildArtistsTemplate() {
-    const data = await httpRequest.get("artists");
+  // Khởi tạo footer mặc định
+  async initDefaultFooter() {
+    // Đợi template service load xong
+    let attempts = 0;
+    const maxAttempts = 50;
 
-    if (data && data.artists) {
-      this.artistsData = data.artists; // Lưu lại danh sách dữ liệu API
+    while (
+      !this.templateService.isTemplateLoaded("footer") &&
+      attempts < maxAttempts
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
 
-      const templateString = data.artists
-        .map((artist) => {
-          return `<div class="library-item" data-id="${artist.id}">
-                    <img
-                      src="${artist.image_url}"
-                      alt="${artist.name}"
-                      class="item-image"
-                    />
-                    <div class="item-info">
-                      <div class="item-title">${artist.name}</div>
-                      <div class="item-subtitle">Artist</div>
-                    </div>
-                  </div>`;
-        })
-        .join("");
-
-      return templateString;
+    if (this.templateService.isTemplateLoaded("footer")) {
+      this.playerService.renderDefaultFooter();
     }
   }
 
-  async _buildArtistDetail(artistId) {
-    const artist = this.artistsData.find((a) => a.id === artistId);
-    if (!artist) return;
+  async _buildAllAlbumsTemplate() {
+    try {
+      const data = await httpRequest.get("albums");
 
-    return `<section class="artist-hero" data-id="${artist.id}">
-              <div class="hero-background">
-                <img
-                  src="${artist.background_image_url}"
-                  alt="${artist.name} artist background"
-                  class="hero-image"
-                />
-                <div class="hero-overlay"></div>
-              </div>
-              <div class="hero-content">
-                <div class="verified-badge">
-                  <i class="fas fa-check-circle"></i>
-                  <span>Verified Artist</span>
-                </div>
-                <h1 class="artist-name">${artist.name}</h1>
-                <p class="monthly-listeners">${formatNumberUser(
-                  artist.monthly_listeners
-                )} monthly listeners</p>
-              </div>
-              </section>
-
-              <!-- Artist Controls -->
-              <section class="artist-controls">
-              <button class="play-btn-large">
-                <i class="fas fa-play"></i>
-              </button>
-              </section>
-              <section class="popular-section">
-              <h2 class="section-title">Popular</h2>
-              <div class="track-list">
-                <div class="track-item">
-                  <div class="track-number">1</div>
-                  <div class="track-image">
-                    <img
-                      src="placeholder.svg?height=40&width=40"
-                      alt="Cho Tôi Lang Thang"
-                    />
-                  </div>
-                  <div class="track-info">
-                    <div class="track-name">Cho Tôi Lang Thang</div>
-                  </div>
-                  <div class="track-plays">27,498,341</div>
-                  <div class="track-duration">4:18</div>
-                  <button class="track-menu-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                </div>
-
-                <div class="track-item playing">
-                  <div class="track-number">
-                    <i class="fas fa-volume-up playing-icon"></i>
-                  </div>
-                  <div class="track-image">
-                    <img src="placeholder.svg?height=40&width=40" alt="Lối Nhỏ" />
-                  </div>
-                  <div class="track-info">
-                    <div class="track-name playing-text">Lối Nhỏ</div>
-                  </div>
-                  <div class="track-plays">45,686,866</div>
-                  <div class="track-duration">4:12</div>
-                  <button class="track-menu-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                </div>
-
-                <div class="track-item">
-                  <div class="track-number">3</div>
-                  <div class="track-image">
-                    <img
-                      src="placeholder.svg?height=40&width=40"
-                      alt="Cho Minh Em"
-                    />
-                  </div>
-                  <div class="track-info">
-                    <div class="track-name">Cho Minh Em</div>
-                  </div>
-                  <div class="track-plays">20,039,024</div>
-                  <div class="track-duration">3:26</div>
-                  <button class="track-menu-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                  </button>
-                </div>
-              </div>
-              </section>`;
+      if (data && data.albums) {
+        // Sử dụng template all-albums
+        return this.templateService.render("all-albums", {
+          albums: data.albums,
+        });
+      } else {
+        return "";
+      }
+    } catch (error) {
+      return "";
+    }
   }
 
-  // Render Sidebar Nghệ Sĩ
-  renderArtists() {
-    const artistsList = document.getElementById("artists");
+  async _buildPopularAlbumTemplate() {
+    try {
+      const data = await httpRequest.get("albums/popular");
 
-    this._buildArtistsTemplate().then((result) => {
-      artistsList.innerHTML = result;
+      if (data && data.albums) {
+        this.artistsData = data.albums;
 
-      const artistItem = artistsList.querySelectorAll(".library-item");
-
-      artistItem.forEach((item) => {
-        item.addEventListener("click", (e) => {
-          // Xoá toàn bộ Active
-          artistItem.forEach((item) => item.classList.remove("active"));
-
-          // Thêm Active vào phần tử được click
-          item.classList.add("active");
-
-          const artistId = e.target.dataset.id;
-          this.renderArtistsDetail(artistId);
+        // Sử dụng template popular-album
+        return this.templateService.render("popular-album", {
+          albums: data.albums,
         });
+      } else {
+        console.error("Invalid data structure:", data);
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching popular albums:", error);
+      return "";
+    }
+  }
+
+  async _buildNewReleasesTemplate() {
+    try {
+      const data = await httpRequest.get("albums/new-releases");
+
+      if (data && data.albums) {
+        // Sử dụng template new-releases
+        return this.templateService.render("new-releases", {
+          albums: data.albums,
+        });
+      } else {
+        console.error("Invalid new releases data structure:", data);
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching new releases:", error);
+      return "";
+    }
+  }
+
+  // Method để render vào DOM
+  async renderPopularAlbums(containerId = "contentWrapper") {
+    try {
+      // Đợi template load xong
+      await this.waitForTemplates();
+
+      const allAlbumsHtml = await this._buildAllAlbumsTemplate();
+      const popularAlbumsHtml = await this._buildPopularAlbumTemplate();
+      const newReleasesHtml = await this._buildNewReleasesTemplate();
+
+      if (allAlbumsHtml && popularAlbumsHtml && newReleasesHtml) {
+        const container = document.getElementById(containerId);
+        if (container) {
+          // Render cả 3 section theo thứ tự
+          container.innerHTML =
+            allAlbumsHtml + popularAlbumsHtml + newReleasesHtml;
+
+          // Khởi tạo slider sau khi render
+          this.initializeSliders();
+
+          // Bind events sau khi render
+          this.bindAlbumEvents();
+        } else {
+          console.error(`Container not found: ${containerId}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error rendering sections:", error);
+    }
+  }
+
+  // Khởi tạo sliders
+  initializeSliders() {
+    // Tìm tất cả content__grid containers
+    const gridContainers = document.querySelectorAll(".content__grid");
+
+    gridContainers.forEach((container, index) => {
+      // Tạo unique ID cho slider
+      const sliderId = `slider-${index}`;
+      container.id = sliderId;
+
+      // Khởi tạo Lopza slider với options đơn giản
+      const slider = new Lopza(container, {
+        slidesPerView: 4,
+        spaceBetween: 16,
+        navigation: true,
       });
 
-      artistItem[0].click();
+      // Lưu slider instance
+      this.sliders.set(sliderId, slider);
     });
   }
 
-  // Render Chi Tiết Nghệ Sĩ
-  renderArtistsDetail(artistId) {
-    const contentWrapper = document.getElementById("contentWrapper");
+  // Đợi templates load xong
+  async waitForTemplates() {
+    let attempts = 0;
+    const maxAttempts = 50; // 5 giây
 
-    this._buildArtistDetail(artistId).then((result) => {
-      contentWrapper.innerHTML = result;
+    while (
+      (!this.templateService.isTemplateLoaded("all-albums") ||
+        !this.templateService.isTemplateLoaded("popular-album") ||
+        !this.templateService.isTemplateLoaded("new-releases")) &&
+      attempts < maxAttempts
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
+
+    if (!this.templateService.isTemplateLoaded("all-albums")) {
+      throw new Error("Template all-albums failed to load");
+    }
+
+    if (!this.templateService.isTemplateLoaded("popular-album")) {
+      throw new Error("Template popular-album failed to load");
+    }
+
+    if (!this.templateService.isTemplateLoaded("new-releases")) {
+      throw new Error("Template new-releases failed to load");
+    }
+  }
+
+  // Bind events cho album cards
+  bindAlbumEvents() {
+    const albumCards = document.querySelectorAll(".content__card[data-id]");
+
+    albumCards.forEach((card) => {
+      card.addEventListener("click", async (e) => {
+        const albumId = card.dataset.id;
+
+        // Hiển thị loading state
+        this.showLoadingState();
+
+        try {
+          // Fetch album detail và tracks
+          const albumDetail = await this.fetchAlbumDetail(albumId);
+          if (albumDetail) {
+            // Render album detail
+            await this.renderAlbumDetail(albumDetail);
+          }
+        } catch (error) {
+          console.error("Error fetching album detail:", error);
+          this.hideLoadingState();
+        }
+      });
     });
+  }
+
+  // Fetch album detail và tracks
+  async fetchAlbumDetail(albumId) {
+    try {
+      const data = await httpRequest.get(`albums/${albumId}/tracks`);
+
+      if (data && data.album && data.tracks) {
+        return data;
+      } else {
+        console.error("Invalid album detail data structure:", data);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching album detail:", error);
+      return null;
+    }
+  }
+
+  // Render album detail
+  async renderAlbumDetail(albumData) {
+    try {
+      // Đợi template load xong
+      await this.waitForAlbumDetailTemplate();
+
+      // Lưu current album data
+      this.currentAlbumData = albumData;
+
+      // Set playlist cho player service
+      this.playerService.setPlaylist(albumData.tracks);
+
+      const html = this.templateService.render("album-detail", {
+        album: albumData.album,
+        tracks: albumData.tracks,
+        total: albumData.total,
+      });
+
+      if (html) {
+        const container = document.getElementById("contentWrapper");
+        if (container) {
+          container.innerHTML = html;
+          // Bind events cho album detail
+          this.bindAlbumDetailEvents();
+
+          // Ẩn loading state
+          this.hideLoadingState();
+        }
+      }
+    } catch (error) {
+      console.error("Error rendering album detail:", error);
+      this.hideLoadingState();
+    }
+  }
+
+  // Đợi album detail template load xong
+  async waitForAlbumDetailTemplate() {
+    let attempts = 0;
+    const maxAttempts = 50; // 5 giây
+
+    while (
+      !this.templateService.isTemplateLoaded("album-detail") &&
+      attempts < maxAttempts
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
+
+    if (!this.templateService.isTemplateLoaded("album-detail")) {
+      throw new Error("Template album-detail failed to load");
+    }
+  }
+
+  // Bind events cho album detail
+  bindAlbumDetailEvents() {
+    // Back button để quay về albums
+    const backButton = document.querySelector(".album-detail__back");
+    if (backButton) {
+      backButton.addEventListener("click", () => {
+        this.renderPopularAlbums(); // Quay về trang albums
+      });
+    }
+
+    // Play button lớn để phát bài hát đầu tiên
+    const playBtnLarge = document.querySelector(".play-btn-large");
+    if (playBtnLarge) {
+      playBtnLarge.addEventListener("click", () => {
+        console.log("Play button large clicked - playing first track");
+        this.playFirstTrack();
+      });
+    }
+
+    // Track click events
+    const trackItems = document.querySelectorAll(".track-item");
+    trackItems.forEach((track) => {
+      track.addEventListener("click", (e) => {
+        const trackId = track.dataset.trackId;
+
+        // TODO: Xử lý khi click vào track (play music, etc.)
+        this.handleTrackClick(trackId);
+      });
+    });
+  }
+
+  // Phát bài hát đầu tiên trong album
+  playFirstTrack() {
+    if (
+      this.currentAlbumData &&
+      this.currentAlbumData.tracks &&
+      this.currentAlbumData.tracks.length > 0
+    ) {
+      const firstTrack = this.currentAlbumData.tracks[0];
+
+      // Phát bài hát đầu tiên
+      this.playerService.playTrack(firstTrack);
+    } else {
+      console.warn("No tracks available to play");
+    }
+  }
+
+  // Xử lý click vào track
+  handleTrackClick(trackId) {
+    // Tìm track data từ current album
+    if (this.currentAlbumData && this.currentAlbumData.tracks) {
+      const track = this.currentAlbumData.tracks.find((t) => t.id === trackId);
+      if (track) {
+        this.playerService.playTrack(track);
+      } else {
+        console.error("Track not found with ID:", trackId);
+      }
+    } else {
+      console.error("No current album data or tracks available");
+    }
+  }
+
+  // Hiển thị loading state
+  showLoadingState() {
+    const container = document.getElementById("contentWrapper");
+    if (container) {
+      container.innerHTML = `
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Đang tải thông tin album...</p>
+        </div>
+      `;
+    }
+  }
+
+  // Ẩn loading state
+  hideLoadingState() {
+    // Loading state sẽ được thay thế khi render xong
+  }
+
+  // Method để destroy sliders
+  destroySliders() {
+    this.sliders.forEach((slider, id) => {
+      slider.destroy();
+    });
+    this.sliders.clear();
+  }
+
+  // Method để refresh sliders
+  refreshSliders() {
+    this.destroySliders();
+    this.initializeSliders();
+  }
+
+  // Method để get slider instance
+  getSlider(sliderId) {
+    return this.sliders.get(sliderId);
+  }
+
+  // Method để get tất cả sliders
+  getAllSliders() {
+    return Array.from(this.sliders.values());
   }
 }
 

@@ -1,0 +1,20 @@
+<div class="content__home">
+  <div class="content__row">
+    <h2 class="content__title">Tất cả albums</h2>
+    <button class="content__btn">Hiện tất cả</button>
+  </div>
+
+  <div class="content__grid">
+    {{#each albums}}
+    <div class="content__card" data-id="{{id}}">
+      <div class="content__thumbnail">
+        <img src="{{cover_image_url}}" alt="{{title}}" class="content__image" />
+      </div>
+      <div class="content__info">
+        <span class="content__info-title">{{title}}</span>
+        <span class="content__info-artist">{{artist_name}}</span>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>

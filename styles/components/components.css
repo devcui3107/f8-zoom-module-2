@@ -345,6 +345,7 @@
   display: flex;
   flex-direction: column;
   margin-top: var(--spacing-lg);
+  margin-bottom: 70px;
 }
 
 .track-item {
@@ -690,7 +691,7 @@
 
 /* Error Message */
 .error-message {
-  display: none;
+  /* display: none; */
   align-items: center;
   gap: var(--spacing-sm);
   margin-top: var(--spacing-sm);

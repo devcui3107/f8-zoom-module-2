@@ -1,0 +1,252 @@
+/* 🎠 Lopza Slider Styles */
+
+.lopza-slider {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  /* Cho phép cuộn dọc bình thường */
+  touch-action: pan-y;
+}
+
+.lopza-wrapper {
+  display: flex;
+  transition: transform 0.3s ease-out;
+  cursor: grab;
+  /* Tối ưu cho trackpad */
+  will-change: transform;
+}
+
+.lopza-wrapper:active {
+  cursor: grabbing;
+}
+
+.lopza-slide {
+  flex-shrink: 0;
+  margin-right: 16px;
+  /* Đảm bảo kích thước cố định cho mỗi slide */
+  width: calc((100% - 48px) / 4); /* 4 slides với 3 khoảng trống 16px */
+  min-width: 200px; /* Kích thước tối thiểu */
+}
+
+.lopza-slide:last-child {
+  margin-right: 0;
+}
+
+/* Responsive slide widths */
+@media (max-width: 1200px) {
+  .lopza-slide {
+    width: calc((100% - 36px) / 4); /* 4 slides với 3 khoảng trống 12px */
+  }
+}
+
+@media (max-width: 1024px) {
+  .lopza-slide {
+    width: calc((100% - 24px) / 4); /* 4 slides với 3 khoảng trống 8px */
+  }
+}
+
+@media (max-width: 768px) {
+  .lopza-slide {
+    width: calc((100% - 16px) / 3); /* 3 slides với 2 khoảng trống 8px */
+  }
+}
+
+@media (max-width: 480px) {
+  .lopza-slide {
+    width: calc((100% - 8px) / 2); /* 2 slides với 1 khoảng trống 8px */
+  }
+}
+
+/* Navigation Buttons */
+.lopza-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lopza-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lopza-nav-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.lopza-nav-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.lopza-nav-btn.disabled:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(1);
+}
+
+.lopza-prev {
+  left: 10px;
+}
+
+.lopza-next {
+  right: 10px;
+}
+
+/* Pagination Dots - Ẩn đi */
+.lopza-pagination {
+  display: none !important;
+}
+
+.lopza-dot {
+  display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lopza-nav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .lopza-prev {
+    left: 5px;
+  }
+
+  .lopza-next {
+    right: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lopza-nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}
+
+/* Custom Scrollbar for Webkit browsers */
+.lopza-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.lopza-slider {
+  scrollbar-width: none;
+}
+
+/* Smooth scrolling */
+.lopza-slider {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+.lopza-nav-btn:focus {
+  outline: 2px solid #1db954;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.lopza-slider.loading .lopza-wrapper {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Animation for slide transitions */
+.lopza-slide {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.lopza-slide:hover {
+  transform: translateY(-2px);
+}
+
+/* Custom animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+.lopza-slide.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.lopza-slide.slide-out {
+  animation: slideOut 0.3s ease-out;
+}
+
+/* Touch feedback */
+.lopza-wrapper.touching {
+  transition: none;
+}
+
+/* Trackpad gesture feedback */
+.lopza-slider.trackpad-active .lopza-wrapper {
+  transition: none;
+}
+
+/* RTL Support */
+.lopza-slider[dir="rtl"] .lopza-wrapper {
+  flex-direction: row-reverse;
+}
+
+.lopza-slider[dir="rtl"] .lopza-slide {
+  margin-right: 0;
+  margin-left: 16px;
+}
+
+.lopza-slider[dir="rtl"] .lopza-slide:last-child {
+  margin-left: 0;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .lopza-nav-btn {
+    background: #000000;
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .lopza-wrapper,
+  .lopza-slide,
+  .lopza-nav-btn {
+    transition: none;
+  }
+
+  .lopza-wrapper {
+    scroll-behavior: auto;
+  }
+}
